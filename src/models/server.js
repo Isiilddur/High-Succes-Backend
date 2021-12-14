@@ -1,20 +1,27 @@
 'use strict'
 const express = require('express')
 const routes = require('../routes/routes')
+const cors = require('cors')
 
 class Server {
     constructor() {
         this.app = express();
         this.PORT = process.env.PORT;
+        this.middlewares();
         this.routesConfig();
+
+    }
+
+    middlewares(){
+        // CORS
+        this.app.use(cors())
+
+        // Read and Parse of body
+        this.app.use(express.json())
     }
 
     routesConfig(){
-
         this.app.use('/api/v1', routes)
-        this.app.get('/', (req, res) => {
-          res.send('Todo Cool!');
-        })
     }
 
     startListen(){
