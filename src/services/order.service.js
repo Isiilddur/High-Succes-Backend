@@ -1,17 +1,18 @@
-const {Product, validate} = require("../models/Product");
+const {Order, validate} = require("../models/Order");
 const Utils = require("../utils/Utils");
-const DAOProduct = require("../Entities/DAOProducts");
+const DAOOrder = require("../Entities/DAOOrders");
 const {SuccessResponse, ErrorResponse} = require("../models/Responses");
 const constants = require("../utils/Constants");
 
 
-const createProduct = (body) => new Promise((resolve, reject) => {
-    let product = Product.from(body)
-    product.id = Utils.generateId()
-    if(validate(product)){
-        let productParsed = Utils.parseObjects(product)
-        DAOProduct.saveProduct(productParsed).then(res =>{
-            const successResponse = new SuccessResponse(200, res, product.id);
+const createOrder = (body) => new Promise((resolve, reject) => {
+    let order = Order.from(body)
+    order.id = Utils.generateId()
+    order.total = order.products.reduce((total, index) => {return total + index.price}, 0)
+    if(validate(order)){
+        let orderParsed = Utils.parseObjects(order)
+        DAOOrder.saveOrder(orderParsed).then(res =>{
+            const successResponse = new SuccessResponse(200, res, order.id);
             resolve(successResponse);
         }).catch(error => {
             const errorResponse = new ErrorResponse(500, error);
@@ -23,11 +24,11 @@ const createProduct = (body) => new Promise((resolve, reject) => {
     }
 })
 
-const updateProduct = (body) => new Promise((resolve, reject) => {
-    let product = Product.from(body)
-    if (product.id !== undefined) {
-        let productParsed = Utils.parseObjects(product)
-        DAOProduct.updateProduct(productParsed).then(res =>{
+const updateOrder = (body) => new Promise((resolve, reject) => {
+    let order = Order.from(body)
+    if (order.id !== undefined) {
+        let orderParsed = Utils.parseObjects(order)
+        DAOOrder.updateOrder(orderParsed).then(res =>{
             const successResponse = new SuccessResponse(200, res);
             resolve(successResponse);
         }).catch(error => {
@@ -40,11 +41,11 @@ const updateProduct = (body) => new Promise((resolve, reject) => {
     }
 })
 
-const updateInventaryProducts = (id, isAdd, items) => new Promise(async (resolve, reject) => {
+const updateStatusOrders = (id, idStatus) => new Promise(async (resolve, reject) => {
 
-    let productParsed = await DAOProduct.listProductById(id)
-    productParsed = handleInventary(productParsed, isAdd, items)
-    DAOProduct.updateProduct(productParsed).then(res =>{
+    let orderParsed = await DAOOrder.listOrderById(id)
+    orderParsed = handleStatus(orderParsed, idStatus)
+    DAOOrder.updateOrder(orderParsed).then(res =>{
         const successResponse = new SuccessResponse(200, res);
         resolve(successResponse);
     }).catch(error => {
@@ -53,18 +54,14 @@ const updateInventaryProducts = (id, isAdd, items) => new Promise(async (resolve
     })
 })
 
-const handleInventary = (product, isAdd, items) => {
-    if(isAdd === "true"){
-        product.inventary += parseInt(items);
-    }else{
-        product.inventary -= parseInt(items);
-    }
-    return product
+const handleStatus = (order,statusId) => {
+    order.status = parseInt(statusId);
+    return order
 }
 
-const listProduct = () => new Promise((resolve, reject) => {
+const listOrder = () => new Promise((resolve, reject) => {
 
-    DAOProduct.listProduct().then(res =>{
+    DAOOrder.listOrder().then(res =>{
         let result = []
         res.forEach(doc => {
             result.push(doc.data())
@@ -77,9 +74,9 @@ const listProduct = () => new Promise((resolve, reject) => {
     })
 })
 
-const listProductById = (id) => new Promise((resolve, reject) => {
+const listOrderById = (id) => new Promise((resolve, reject) => {
 
-    DAOProduct.listProductById(id).then(res =>{
+    DAOOrder.listOrderById(id).then(res =>{
         const successResponse = new SuccessResponse(200, constants.SUCCESS,res);
         resolve(successResponse);
     }).catch(error => {
@@ -88,9 +85,9 @@ const listProductById = (id) => new Promise((resolve, reject) => {
     })
 })
 
-const listProductByCategory = (categoryId) => new Promise((resolve, reject) => {
+const listOrderByKeyValue = (key, value) => new Promise((resolve, reject) => {
 
-    DAOProduct.listProductByKeyValue("category", categoryId).then(res =>{
+    DAOOrder.listOrderByKeyValue(key, value).then(res => {
         let result = []
         res.forEach(doc => {
             result.push(doc.data())
@@ -103,9 +100,9 @@ const listProductByCategory = (categoryId) => new Promise((resolve, reject) => {
     })
 })
 
-const deleteProduct = (id) => new Promise((resolve, reject) => {
+const deleteOrder = (id) => new Promise((resolve, reject) => {
 
-    DAOProduct.deleteProduct(id).then(res =>{
+    DAOOrder.deleteOrder(id).then(res =>{
         const successResponse = new SuccessResponse(200, res);
         resolve(successResponse);
     }).catch(error => {
@@ -115,12 +112,12 @@ const deleteProduct = (id) => new Promise((resolve, reject) => {
 })
 
 module.exports = {
-    createProduct,
-    updateProduct,
-    listProduct,
-    listProductById,
-    deleteProduct,
-    listProductByCategory,
-    updateInventaryProducts
+    createOrder,
+    updateOrder,
+    listOrder,
+    listOrderById,
+    deleteOrder,
+    listOrderByKeyValue,
+    updateStatusOrders
 }
 

@@ -1,32 +1,14 @@
 const express = require('express')
-const ordersRoutes = express.Router()
+const orderRoutes = express.Router()
+const orderController = require("../controllers/orders.controller");
 
-const ordersController  = require('../controllers/orders.controller');
+orderRoutes.get('/order', orderController.listOrder);
+orderRoutes.get('/order/:key/:value', orderController.listOrderByKeyValue);
+orderRoutes.get('/order/:id', orderController.listOrderById);
+orderRoutes.post('/order', orderController.createOrder);
+orderRoutes.put('/order/', orderController.updateOrder);
+orderRoutes.put('/order/:id/:status', orderController.updateStatusOrders);
+orderRoutes.delete('/order/:id', orderController.deleteOrder);
 
-ordersRoutes.post('/order/', ordersController.createOrder);
-ordersRoutes.get('/order/:id', ordersController.findOrderById);
-ordersRoutes.delete('/order/:id', ordersController.deleteOrder);
-ordersRoutes.put('/order/:id', ordersController.editOrder);
-ordersRoutes.get('/order', ordersController.listOrders);
-ordersRoutes.get('/order/:status', ordersController.listOrdersByStatus);
-ordersRoutes.put('/order/:status', ordersController.editOrderStatus);
+module.exports = orderRoutes;
 
-
-module.exports = ordersRoutes;
-/*
-*   Following endpoints are not mandatory yet
-*   Posisbly this should be changed to another controller
-* ordersRoutes.get('/order/:status', ordersController.editOrderStatus);
-* ordersRoutes.get('/order/:status', ordersController.editOrderStatus);
-* ordersRoutes.get('/order/:status', ordersController.editOrderStatus);
-* ordersRoutes.get('/order/:status', ordersController.editOrderStatus);
-* ordersRoutes.get('/order/:status', ordersController.editOrderStatus);
-*
-* */
-
-
-
-
-
-
-module.exports = adminRoutes;

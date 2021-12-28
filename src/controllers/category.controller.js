@@ -1,15 +1,15 @@
 const categoryService = require('../services/category.service');
 
-const updateCategory = async (req, res) => {
-    categoryService.updateCategory(req.body).then(response =>{
+const createCategory = async (req, res) => {
+    categoryService.createCategory(req.body).then(response =>{
         res.status(response.status).json(response);
     }).catch(error => {
         res.status(error.status).json(error);
     })
 }
 
-const createCategory = async (req, res) => {
-    categoryService.createCategory(req.body).then(response =>{
+const updateCategory = async (req, res) => {
+    categoryService.updateCategory(req.body).then(response =>{
         res.status(response.status).json(response);
     }).catch(error => {
         res.status(error.status).json(error);

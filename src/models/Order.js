@@ -10,7 +10,7 @@ class Order {
     date;
 
 
-    constructor(id, email, direction, phone, products, status, total, date) {
+    constructor(id, email, direction, phone, products, status, total) {
         this.id = id;
         this.email = email;
         this.direction = direction;
@@ -18,7 +18,7 @@ class Order {
         this.products = products;
         this.status = status;
         this.total = total;
-        this.date = date;
+        this.date = new Date().toLocaleDateString();
     }
 
     get id() {
@@ -81,11 +81,15 @@ class Order {
         return Object.assign(new Order(), json);
     }
 
-    validate = () => {
-        return Object.keys(this).every(value => {
-            return !(this[value] === null || this[value] == undefined);
-        });
-    }
+
+}
+validate = () => {
+    return Object.keys(this).every(value => {
+        return !(this[value] === null || this[value] == undefined);
+    });
 }
 
-module.exports = Order
+module.exports = {
+    Order,
+    validate
+}
