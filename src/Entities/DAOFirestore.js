@@ -60,7 +60,7 @@ const listAll = (collectionName) => new Promise((resolve, reject) => {
 const findByCollectionAndId = (collectionName, id) => new Promise((resolve, reject) => {
     try {
         dbRef.collection(collectionName).doc(id).get()
-            .then((doc) => {
+            .then(doc => {
                 if (doc.exists) {
                     resolve(doc.data())
                 } else {
@@ -70,6 +70,21 @@ const findByCollectionAndId = (collectionName, id) => new Promise((resolve, reje
             .catch(error => {
                 reject(error)
             });
+    } catch (e) {
+        reject(e);
+    }
+})
+
+const findByCollectionAndKey = (collectionName, key, value) => new Promise((resolve, reject) => {
+    try {
+        dbRef.collection(collectionName).where(key, "==", parseInt(value)).get()
+            .then((querySnapshot) => {
+                resolve(querySnapshot)
+            })
+            .catch(error => {
+                reject(error)
+            });
+
     } catch (e) {
         reject(e);
     }
@@ -96,5 +111,6 @@ module.exports = {
     deleteItem,
     listAll,
     findByCollectionAndId,
-    findByKeyValue
+    findByKeyValue,
+    findByCollectionAndKey
 }

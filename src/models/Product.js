@@ -4,23 +4,27 @@ class Product {
     name;
     status;
     description;
-    imageKey;
+    imagesKey;
     price;
     haveDiscount;
     discountPrice;
     size;
+    category;
+    inventary;
 
 
-    constructor(id, name, status, description, imageKey, price, haveDiscount, discountPrice, size) {
+    constructor(id, name, status, description, imagesKey, price, haveDiscount, discountPrice, size, category, inventary) {
         this.id = id;
         this.name = name;
         this.status = status;
         this.description = description;
-        this.imageKey = imageKey;
+        this.imagesKey = imagesKey;
         this.price = price;
         this.haveDiscount = haveDiscount;
         this.discountPrice = discountPrice;
         this.size = size;
+        this.category = category;
+        this.inventary = inventary;
     }
 
     get id() {
@@ -55,12 +59,12 @@ class Product {
         this.description = value;
     }
 
-    get imageKey() {
+    get imagesKey() {
         return this.imageKey;
     }
 
-    set imageKey(value) {
-        this.imageKey = value;
+    set imagesKey(value) {
+        this.imagesKey = value;
     }
 
     get price() {
@@ -99,15 +103,33 @@ class Product {
         return Object.assign(new Product(), json);
     }
 
-    validate = () => {
-        return Object.keys(this).every(value => {
-            if(value == 'discountPrice' && !this.haveDiscount) {
-                return true
-            }
-            return !(this[value] === null || this[value] == undefined);
+    get category() {
+        return this.category;
+    }
 
-        });
+    set category(value) {
+        this.category = value;
+    }
+
+    get inventary() {
+        return this.inventary;
+    }
+
+    set inventary(value) {
+        this.inventary = value;
     }
 }
+validate = (obj, isUpdate) => {
+    return Object.keys(obj).every(value => {
+        if(value == 'discountPrice' && !obj.haveDiscount) {
+            return true
+        }
+        return !(obj[value] === null || obj[value] == undefined);
 
-module.exports = Product
+    });
+}
+
+module.exports ={
+    Product,
+    validate
+}
