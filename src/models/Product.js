@@ -59,12 +59,12 @@ class Product {
         this.description = value;
     }
 
-    get imagesKey() {
+    get imageKey() {
         return this.imageKey;
     }
 
-    set imagesKey(value) {
-        this.imagesKey = value;
+    set imageKey(value) {
+        this.imageKey = value;
     }
 
     get price() {
@@ -103,33 +103,15 @@ class Product {
         return Object.assign(new Product(), json);
     }
 
-    get category() {
-        return this.category;
-    }
+    validate = () => {
+        return Object.keys(this).every(value => {
+            if(value == 'discountPrice' && !this.haveDiscount) {
+                return true
+            }
+            return !(this[value] === null || this[value] == undefined);
 
-    set category(value) {
-        this.category = value;
-    }
-
-    get inventary() {
-        return this.inventary;
-    }
-
-    set inventary(value) {
-        this.inventary = value;
+        });
     }
 }
-validate = (obj, isUpdate) => {
-    return Object.keys(obj).every(value => {
-        if(value == 'discountPrice' && !obj.haveDiscount) {
-            return true
-        }
-        return !(obj[value] === null || obj[value] == undefined);
 
-    });
-}
-
-module.exports ={
-    Product,
-    validate
-}
+module.exports = Product
