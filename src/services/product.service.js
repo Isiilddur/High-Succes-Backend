@@ -1,26 +1,32 @@
-const {Product, validate} = require("../models/Product");
 const Utils = require("../utils/Utils");
 const DAOProduct = require("../Entities/DAOProducts");
 const {SuccessResponse, ErrorResponse} = require("../models/Responses");
 const constants = require("../utils/Constants");
+const Product = require("../models/Product");
 
 
 const createProduct = (body) => new Promise((resolve, reject) => {
-    let product = Product.from(body)
-    product.id = Utils.generateId()
-    if(validate(product)){
-        let productParsed = Utils.parseObjects(product)
-        DAOProduct.saveProduct(productParsed).then(res =>{
-            const successResponse = new SuccessResponse(200, res, product.id);
-            resolve(successResponse);
-        }).catch(error => {
-            const errorResponse = new ErrorResponse(500, error);
+    try{
+        let product = Product.from(body)
+        product.id = Utils.generateId()
+        if(validate(product)){
+            let productParsed = Utils.parseObjects(product)
+            DAOProduct.saveProduct(productParsed).then(res =>{
+                const successResponse = new SuccessResponse(200, res, product.id);
+                resolve(successResponse);
+            }).catch(error => {
+                const errorResponse = new ErrorResponse(500, error);
+                reject(errorResponse)
+            })
+        }else{
+            const errorResponse = new ErrorResponse(400, constants.BAD_REQUEST);
             reject(errorResponse)
-        })
-    }else{
+        }
+    }catch (e){
         const errorResponse = new ErrorResponse(400, constants.BAD_REQUEST);
         reject(errorResponse)
     }
+
 })
 
 const updateProduct = (body) => new Promise((resolve, reject) => {
@@ -64,12 +70,18 @@ const handleInventary = (product, isAdd, items) => {
 
 const listProduct = () => new Promise((resolve, reject) => {
 
+    let response = {}
     DAOProduct.listProduct().then(res =>{
-        let result = []
         res.forEach(doc => {
-            result.push(doc.data())
+            let temp = doc.data()
+            if(response[temp.category]){
+                response[temp.category].push(doc.data())
+            }else{
+                response[temp.category] = []
+                response[temp.category].push(doc.data())
+            }
         });
-        const successResponse = new SuccessResponse(200, constants.SUCCESS,result);
+        const successResponse = new SuccessResponse(200, constants.SUCCESS,response);
         resolve(successResponse);
     }).catch(error => {
         const errorResponse = new ErrorResponse(500,error.toString());

@@ -9,7 +9,6 @@ class Direction {
     zip;
     suburb;
 
-
     constructor(street, houseNumber, deptNumber, city, state, country, zip, suburb) {
         this.street = street;
         this.houseNumber = houseNumber;
@@ -20,7 +19,6 @@ class Direction {
         this.zip = zip;
         this.suburb = suburb;
     }
-
 
     get street() {
         return this.street;
