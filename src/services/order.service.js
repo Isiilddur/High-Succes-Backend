@@ -8,7 +8,7 @@ const constants = require("../utils/Constants");
 const createOrder = (body) => new Promise((resolve, reject) => {
     let order = Order.from(body)
     order.id = Utils.generateId()
-    order.total = order.products.reduce((total, index) => {return total + index.price}, 0)
+    order.total = order.products.reduce((total, index) => {return total + index.item.price}, 0)
     if(validate(order)){
         let orderParsed = Utils.parseObjects(order)
         DAOOrder.saveOrder(orderParsed).then(res =>{
