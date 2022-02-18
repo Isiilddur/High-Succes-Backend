@@ -8,9 +8,10 @@ class Order {
     status;
     total;
     date;
+    name;
 
 
-    constructor(id, email, direction, phone, products, status, total) {
+    constructor(id, email, direction, phone, products, status, total, name) {
         this.id = id;
         this.email = email;
         this.direction = direction;
@@ -18,6 +19,7 @@ class Order {
         this.products = products;
         this.status = status;
         this.total = total;
+        this.name = name
         this.date = new Date().toLocaleDateString();
     }
 
@@ -29,6 +31,13 @@ class Order {
         this.id = value;
     }
 
+    get name() {
+        return this.name;
+    }
+
+    set name(value) {
+        this.name = value;
+    }
     get email() {
         return this.email;
     }
