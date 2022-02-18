@@ -7,34 +7,34 @@ const productService = require("../services/product.service");
  */
 const createProduct = async (req, res) => {
     productService.createProduct(req.body).then(response =>{
-        res.status(response.status).json(response);
+        return res.status(response.status).send(response);
     }).catch(error => {
-        res.status(error.status).json(error);
+        res.status(error.status).send(error);
     })
 }
 
 const updateProduct = async (req, res) => {
     productService.updateProduct(req.body).then(response =>{
-        res.status(response.status).json(response);
+        res.status(response.status).send(response);
     }).catch(error => {
-        res.status(error.status).json(error);
+        res.status(error.status).send(error);
     })
 }
 
 const listProduct = async (req, res) => {
     productService.listProduct(req.body).then(response =>{
-        res.status(response.status).json(response);
+        res.status(response.status).send(response);
     }).catch(error => {
-        res.status(error.status).json(error);
+        res.status(error.status).send(error);
     })
 }
 
 const listProductById = async (req, res) => {
     let id = req.params.id
     productService.listProductById(id).then(response =>{
-        res.status(response.status).json(response);
+        res.status(response.status).send(response);
     }).catch(error => {
-        res.status(error.status).json(error);
+        res.status(error.status).send(error);
     })
 }
 

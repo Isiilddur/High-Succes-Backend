@@ -1,3 +1,5 @@
+'use strict'
+
 class Product {
 
     id;
@@ -11,9 +13,9 @@ class Product {
     size;
     category;
     inventary;
+    baseImage;
 
-
-    constructor(id, name, status, description, imagesKey, price, haveDiscount, discountPrice, size, category, inventary) {
+    constructor(id, name, status, description, imagesKey, price, haveDiscount, discountPrice, size, category, inventary, baseImage) {
         this.id = id;
         this.name = name;
         this.status = status;
@@ -23,6 +25,7 @@ class Product {
         this.haveDiscount = haveDiscount;
         this.discountPrice = discountPrice;
         this.size = size;
+        this.baseImage = baseImage;
         this.category = category;
         this.inventary = inventary;
     }
@@ -59,12 +62,12 @@ class Product {
         this.description = value;
     }
 
-    get imageKey() {
-        return this.imageKey;
+    get imagesKey() {
+        return this.imagesKey;
     }
 
-    set imageKey(value) {
-        this.imageKey = value;
+    set imagesKey(value) {
+        this.imagesKey = value;
     }
 
     get price() {
@@ -99,11 +102,36 @@ class Product {
         this.size = value;
     }
 
+
+    get category() {
+        return this._category;
+    }
+
+    set category(value) {
+        this._category = value;
+    }
+
+    get inventary() {
+        return this._inventary;
+    }
+
+    set inventary(value) {
+        this._inventary = value;
+    }
+
+    get baseImage() {
+        return this._baseImage;
+    }
+
+    set baseImage(value) {
+        this._baseImage = value;
+    }
+
     static from(json){
         return Object.assign(new Product(), json);
     }
 
-    validate = () => {
+     validate = () => {
         return Object.keys(this).every(value => {
             if(value == 'discountPrice' && !this.haveDiscount) {
                 return true
@@ -114,4 +142,4 @@ class Product {
     }
 }
 
-module.exports = Product
+module.exports = Product;
