@@ -15,7 +15,7 @@ class Server {
     middlewares(){
         // CORS
         this.app.use(cors())
-
+        this.app.use(express.bodyParser({limit: '50mb'}));
         // Read and Parse of body
         this.app.use(express.json())
     }
