@@ -29,7 +29,7 @@ const uploadFile = (file) => new Promise((resolve, reject) =>{
         ContentType: `image/${file.nombre.split(".")[1]}`
     };
 
-    s3.putObject(data, function(err, data){
+    s3.upload(params, function(err, data){
         if (err) {
             reject(data)
         } else {
@@ -37,25 +37,22 @@ const uploadFile = (file) => new Promise((resolve, reject) =>{
         }
     });
 
-    // Uploading files to the bucket
-    s3.upload(params, function(err, data) {
-        if (err) {
-            throw err;
-        }
-        console.log(`File uploaded successfully. ${data.Location}`);
-    });
 });
 
 
-const createProduct = (body) => new Promise((resolve, reject) => {
+const createProduct = (body) => new Promise(async (resolve, reject) => {
     try{
         let product = Product.from(body)
         product.id = Utils.generateId()
         if(validate(product)){
-            let productParsed = Utils.parseObjects(product)
-            for (const images of product.imagesKey) {
-                uploadFile(images)
+            if(product.imagesKey != undefined){
+                product.imagesKey = await uploadImages(product.imagesKey)
             }
+            if(product.baseImage != undefined){
+                product.baseImage = await uploadImages(product.baseImage)
+            }
+            let productParsed = Utils.parseObjects(product)
+
             DAOProduct.saveProduct(productParsed).then(res =>{
                 const successResponse = new SuccessResponse(200, res, product.id);
                 resolve(successResponse);
@@ -72,6 +69,18 @@ const createProduct = (body) => new Promise((resolve, reject) => {
         reject(errorResponse)
     }
 
+})
+
+const uploadImages = (data) => new Promise(async (resolve, reject) => {
+    let result = []
+    for (const images of data) {
+        await uploadFile(images).then(res =>{
+            result.push(res.Location)
+        }).catch(err=>{
+            reject([])
+        })
+    }
+    resolve(result)
 })
 
 const updateProduct = (body) => new Promise((resolve, reject) => {
