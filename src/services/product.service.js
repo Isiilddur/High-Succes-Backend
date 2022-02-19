@@ -3,6 +3,48 @@ const DAOProduct = require("../Entities/DAOProducts");
 const {SuccessResponse, ErrorResponse} = require("../models/Responses");
 const constants = require("../utils/Constants");
 const Product = require("../models/Product");
+const AWS = require('aws-sdk');
+const fs = require('fs');
+
+const ID = process.env.ID;
+const SECRET = process.env.SECRET;
+const BUCKET_NAME = "high-success"
+
+const s3 = new AWS.S3({
+    accessKeyId: ID,
+    secretAccessKey: SECRET
+});
+
+const uploadFile = (file) => new Promise((resolve, reject) =>{
+    // Read content from the file
+
+    // Setting up S3 upload parameters
+
+    let buf = Buffer.from(file.data.replace(/^data:image\/\w+;base64,/, ""),'base64')
+    const params = {
+        Bucket: BUCKET_NAME,
+        Key: file.nombre, // File name you want to save as in S3
+        Body: buf,
+        ContentEncoding: 'base64',
+        ContentType: `image/${file.nombre.split(".")[1]}`
+    };
+
+    s3.putObject(data, function(err, data){
+        if (err) {
+            reject(data)
+        } else {
+            resolve(data);
+        }
+    });
+
+    // Uploading files to the bucket
+    s3.upload(params, function(err, data) {
+        if (err) {
+            throw err;
+        }
+        console.log(`File uploaded successfully. ${data.Location}`);
+    });
+});
 
 
 const createProduct = (body) => new Promise((resolve, reject) => {
@@ -11,6 +53,9 @@ const createProduct = (body) => new Promise((resolve, reject) => {
         product.id = Utils.generateId()
         if(validate(product)){
             let productParsed = Utils.parseObjects(product)
+            for (const images of product.imagesKey) {
+                uploadFile(images)
+            }
             DAOProduct.saveProduct(productParsed).then(res =>{
                 const successResponse = new SuccessResponse(200, res, product.id);
                 resolve(successResponse);
@@ -133,6 +178,7 @@ module.exports = {
     listProductById,
     deleteProduct,
     listProductByCategory,
-    updateInventaryProducts
+    updateInventaryProducts,
+
 }
 

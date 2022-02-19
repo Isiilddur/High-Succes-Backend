@@ -2,11 +2,14 @@
 const express = require('express')
 const routes = require('../routes/routes')
 const cors = require('cors')
+const bodyParser = require('body-parser');
 
 class Server {
     constructor() {
         this.app = express();
         this.PORT = process.env.PORT;
+        this.app.use(express.urlencoded({ limit: "50mb", parameterLimit: 500000000 }));
+        this.app.use(express.json({ limit: "50mb", parameterLimit: 500000000 }));
         this.middlewares();
         this.routesConfig();
 
@@ -15,7 +18,6 @@ class Server {
     middlewares(){
         // CORS
         this.app.use(cors())
-        this.app.use(express.bodyParser({limit: '50mb'}));
         // Read and Parse of body
         this.app.use(express.json())
     }
