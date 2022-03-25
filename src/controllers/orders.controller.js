@@ -1,7 +1,7 @@
 const orderService = require("../services/order.service");
 
 const createOrder = async (req, res) => {
-    orderService.createOrder(req.body).then(response =>{
+    orderService.createOrder(req.body).then(response => {
         res.status(response.status).json(response);
     }).catch(error => {
         res.status(error.status).json(error);
